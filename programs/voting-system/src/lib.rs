@@ -20,6 +20,22 @@ pub mod voting_system {
         poll.description = description;
         poll.options = options;
         poll.status = true;
+        msg!("New poll has been created with poll id: {:?}", poll_id);
+        Ok(())
+    }
+
+    pub fn initialize_vote(ctx: Context<VoteInPoll>, option_index: u8) -> Result<()> {
+        let payer = &ctx.accounts.payer;
+        let poll = &mut ctx.accounts.poll;
+        let voter_record = &mut ctx.accounts.voter_record;
+
+        voter_record.poll = poll.key();
+        voter_record.voter = payer.key();
+        voter_record.option_index = option_index;
+
+        poll.options[option_index as usize].votes += 1; //incrementing tally record in poll
+
+        msg!("Vote from Pubkey: {:?} has been casted", payer.key());
         Ok(())
     }
 }
@@ -45,7 +61,6 @@ pub struct Options {
     pub description: String,
     pub votes: u64,
 }
-
 
 // Account Struct: Voter Record (Creates a PDA for each voter to prevent duplicate votes)
 #[account]
@@ -75,7 +90,6 @@ pub struct CreatePoll<'info> {
 
 // Context: Vote In Poll
 #[derive(Accounts)]
-#[instruction(poll_id: u64)]
 pub struct VoteInPoll<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
@@ -85,7 +99,7 @@ pub struct VoteInPoll<'info> {
 
     #[account(init,
         space=8+VoterRecord::INIT_SPACE, payer=payer,
-        seeds=[b"vote", payer.key().as_ref(),poll_id.to_le_bytes().as_ref()], bump)]
+        seeds=[b"vote", payer.key().as_ref(),poll.key().as_ref()], bump)]
     pub voter_record: Account<'info, VoterRecord>,
 
     pub system_program: Program<'info, System>,
