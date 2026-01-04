@@ -25,8 +25,11 @@ pub mod voting_system {
     }
 
     pub fn initialize_vote(ctx: Context<VoteInPoll>, option_index: u8) -> Result<()> {
+
         let payer = &ctx.accounts.payer;
         let poll = &mut ctx.accounts.poll;
+        require!(poll.status == true, VotingError::PollClosed); //Checking if poll is open
+        require!((option_index as usize) < poll.options.len(), VotingError::InvalidOptionIndex); //Checking if option index is valid
         let voter_record = &mut ctx.accounts.voter_record;
 
         voter_record.poll = poll.key();
@@ -36,6 +39,12 @@ pub mod voting_system {
         poll.options[option_index as usize].votes += 1; //incrementing tally record in poll
 
         msg!("Vote from Pubkey: {:?} has been casted", payer.key());
+        Ok(())
+    }
+
+    pub fn end_poll(ctx: Context<EndPoll>, poll_id: u64) -> Result<()> {
+        let poll = &mut ctx.accounts.poll;
+        poll.status = false;
         Ok(())
     }
 }
@@ -103,4 +112,27 @@ pub struct VoteInPoll<'info> {
     pub voter_record: Account<'info, VoterRecord>,
 
     pub system_program: Program<'info, System>,
+}
+
+// Context: End Poll
+#[derive(Accounts)]
+#[instruction(poll_id: u64)]
+pub struct EndPoll<'info> {
+    #[account]
+    pub authority: Signer<'info>,
+
+    #[account(mut, seeds=[b"poll", authority.key().as_ref(), poll_id.to_le_bytes().as_ref()],
+    bump, has_one=authority)]
+    pub poll: Account<'info, Poll>,
+}
+
+//==============================================================
+
+#[error_code]
+pub enum VotingError {
+    #[msg("This poll has been closed and is no longer accepting votes.")]
+    PollClosed,
+
+    #[msg("Invalid option index provided.")]
+    InvalidOptionIndex,
 }
