@@ -118,7 +118,7 @@ pub struct VoteInPoll<'info> {
 #[derive(Accounts)]
 #[instruction(poll_id: u64)]
 pub struct EndPoll<'info> {
-    #[account]
+    #[account()]
     pub authority: Signer<'info>,
 
     #[account(mut, seeds=[b"poll", authority.key().as_ref(), poll_id.to_le_bytes().as_ref()],
