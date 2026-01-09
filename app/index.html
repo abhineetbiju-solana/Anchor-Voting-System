@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Voting System</title>
+    <meta name="description" content="A decentralized voting system built on Solana blockchain">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <h1 class="main-heading">Voting System</h1>
+            <button id="connect-wallet" class="btn btn-primary">Connect Wallet</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Create Poll Section -->
+        <section id="create-poll" class="card">
+            <h2>Create New Poll</h2>
+            <form id="poll-form">
+                <div class="form-group">
+                    <label for="poll-description">Poll Question</label>
+                    <input type="text" id="poll-description" placeholder="What would you like to ask?" required>
+                </div>
+                <div class="form-group">
+                    <label>Options</label>
+                    <div id="options-container">
+                        <input type="text" class="option-input" placeholder="Option 1" required>
+                        <input type="text" class="option-input" placeholder="Option 2" required>
+                    </div>
+                    <button type="button" id="add-option" class="btn btn-secondary">+ Add Option</button>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Poll</button>
+            </form>
+        </section>
+
+        <!-- Active Polls Section -->
+        <section id="polls-section" class="card">
+            <h2>Active Polls</h2>
+            <div id="polls-list">
+                <p class="empty-state">No active polls. Create one above!</p>
+            </div>
+        </section>
+
+        <!-- Poll Results Section (will be populated dynamically) -->
+        <section id="results-section" class="card hidden">
+            <h2>Poll Results</h2>
+            <div id="results-container"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Built on Solana • Powered by Anchor</p>
+    </footer>
+
+    <!-- Status Toast (used to provide non-intrusive notifications) -->
+    <div id="toast" class="toast hidden">
+        <span id="toast-message"></span>
+    </div>
+
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
