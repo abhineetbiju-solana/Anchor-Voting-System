@@ -44,3 +44,38 @@ connectWalletBtn.addEventListener('click', async function () {
     console.log("Wallet connection failed: ", err);
   }
 })
+
+// Create poll 
+createPollBtn.addEventListener('click', async function () {
+  if (!program || !publicKey) {
+    showToast("Error in program/public key", "error");
+    console.log("Error in program/public key.");
+    return;
+  }
+
+  try {
+    const pollId = new anchor.BN(Math.floor(Math.random() * 9000000) + 1000000);
+    const description = document.getElementById('poll-description').value;
+    const options = Array.from(document.querySelectorAll('.option-input'))
+      .map(input => ({
+        description: input.value,
+        votes: new anchor.BN(0),
+      }));
+
+
+    const txn = await program.methods
+      .createPoll(pollId, description, options)
+      .accounts({
+        payer: publicKey,
+      })
+      .rpc();
+
+    document.getElementById('poll-form').reset();
+
+    showToast("Poll has been successfully created", 'success');
+    console.log("Poll has been successfully created.");
+  } catch (err) {
+    showToast("Failed to create poll", 'error');
+    console.log("Failed to create poll.", err);
+  }
+})
