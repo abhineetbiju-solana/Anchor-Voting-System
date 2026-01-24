@@ -1,8 +1,7 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Connection, PublicKey } from "@solana/web3.js";
 import idl from "../idl/voting_system.json";
-import { showToast } from "../app.js";
-
+import { showToast } from "./toast.js";
 
 
 // Create global variables
@@ -15,7 +14,6 @@ let publicKey = null;
 
 // DOM element references
 const connectWalletBtn = document.querySelector("#connect-wallet");
-const addOptionBtn = document.querySelector("#add-option");
 const createPollBtn = document.querySelector("#submit");
 
 // Establish wallet Connection

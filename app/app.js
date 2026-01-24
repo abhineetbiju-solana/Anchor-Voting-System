@@ -1,21 +1,18 @@
-// Creating helper function to show status toast
-export function showToast(message, type = 'info', duration = 3000) {
-    const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toast-message');
+import { showToast } from './utils/toast.js';
+import './utils/anchorClient.js';
 
-    // Set message
-    toastMessage.textContent = message;
 
-    // Reset classes and add specific type
-    toast.className = 'toast'; // Base class
-    toast.classList.add(type);
+// Handle Add Option button click
+document.getElementById('add-option').addEventListener('click', () => {
+    const optionsContainer = document.getElementById('options-container');
+    const optionCount = optionsContainer.querySelectorAll('.option-input').length + 1;
 
-    // Show
-    toast.classList.remove('hidden');
+    const newInput = document.createElement('input');
+    newInput.type = 'text';
+    newInput.className = 'option-input';
+    newInput.placeholder = `Option ${optionCount}`;
+    newInput.required = true;
 
-    // Hide after duration
-    setTimeout(() => {
-        toast.classList.add('hidden');
-    }, duration);
-}
+    optionsContainer.appendChild(newInput);
+});
 
