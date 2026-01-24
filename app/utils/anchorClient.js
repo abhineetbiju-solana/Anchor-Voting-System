@@ -6,7 +6,7 @@ import { showToast } from "./toast.js";
 
 // Create global variables
 const PROGRAM_ID = new PublicKey(idl.address);
-const CLUSTER_URL = "http://127.0.0.1:8899"
+const CLUSTER_URL = "https://api.devnet.solana.com";
 
 let program = null;
 let provider = null;
@@ -46,7 +46,9 @@ connectWalletBtn.addEventListener('click', async function () {
 })
 
 // Create poll 
-createPollBtn.addEventListener('click', async function () {
+createPollBtn.addEventListener('click', async function (event) {
+  event.preventDefault();
+
   if (!program || !publicKey) {
     showToast("Error in program/public key", "error");
     console.log("Error in program/public key.");
@@ -74,8 +76,31 @@ createPollBtn.addEventListener('click', async function () {
 
     showToast("Poll has been successfully created", 'success');
     console.log("Poll has been successfully created.");
+
+    // Dispatch event to notify that a new poll was created
+    window.dispatchEvent(new CustomEvent('pollCreated'));
   } catch (err) {
     showToast("Failed to create poll", 'error');
     console.log("Failed to create poll.", err);
   }
 })
+
+// Fetch all active polls
+export async function fetchActivePolls() {
+  if (!program) {
+    return [];
+  }
+
+  try {
+    const allPolls = await program.account.poll.all();
+    return allPolls.filter(poll => poll.account.status === true);
+  } catch (err) {
+    console.error("Failed to fetch polls:", err);
+    return [];
+  }
+}
+
+// Check if wallet is connected
+export function isWalletConnected() {
+  return program !== null && publicKey !== null;
+}

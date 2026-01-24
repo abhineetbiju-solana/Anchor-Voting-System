@@ -1,5 +1,5 @@
 {
-  "address": "83n1rqQHGL8WidFW2LuXkG5dkPLLdB2VNoW8TzXG2JNR",
+  "address": "9ySVZtNi4B34cq4ewXAdVS2fwJ7q2cTbRmnSBGo2BF58",
   "metadata": {
     "name": "voting_system",
     "version": "0.1.0",
@@ -124,7 +124,7 @@
       ],
       "args": [
         {
-          "name": "poll_id",
+          "name": "_poll_id",
           "type": "u64"
         }
       ]

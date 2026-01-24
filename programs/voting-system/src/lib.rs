@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("83n1rqQHGL8WidFW2LuXkG5dkPLLdB2VNoW8TzXG2JNR");
+declare_id!("9ySVZtNi4B34cq4ewXAdVS2fwJ7q2cTbRmnSBGo2BF58");
 
 #[program]
 pub mod voting_system {
@@ -42,7 +42,7 @@ pub mod voting_system {
         Ok(())
     }
 
-    pub fn end_poll(ctx: Context<EndPoll>, poll_id: u64) -> Result<()> {
+    pub fn end_poll(ctx: Context<EndPoll>, _poll_id: u64) -> Result<()> {
         let poll = &mut ctx.accounts.poll;
         poll.status = false;
         Ok(())
