@@ -122,9 +122,43 @@ export async function vote(pollPubKeyStr, optionIndex) {
   }
 }
 
+// End/Close Poll
+export async function endPoll(pollPubKeyStr, pollId) {
+  if (!program || !publicKey) {
+    showToast("Error in program/public key", "error");
+    console.log("Error in program/public key.");
+    return false;
+  }
+
+  try {
+    const pollPubKey = new PublicKey(pollPubKeyStr);
+
+    const txn = await program.methods
+      .endPoll(new anchor.BN(pollId))
+      .accounts({
+        authority: publicKey,
+        poll: pollPubKey,
+      })
+      .rpc();
+
+    showToast("Poll has been closed successfully", 'success');
+    console.log("Poll has been closed successfully.");
+    return true;
+  } catch (err) {
+    showToast("Failed to close poll", 'error');
+    console.log("Failed to close poll: ", err);
+    return false;
+  }
+}
+
 
 // ===============================================================
 // Helper Functions
+
+// Get connected wallet's public key
+export function getWalletPubKey() {
+  return publicKey;
+}
 
 // Fetch all active polls
 export async function fetchActivePolls() {

@@ -1,5 +1,5 @@
 import { showToast } from './utils/toast.js';
-import { fetchActivePolls, isWalletConnected, vote } from './utils/anchorClient.js';
+import { fetchActivePolls, isWalletConnected, vote, getWalletPubKey, endPoll } from './utils/anchorClient.js';
 
 
 // Handle Add Option button click
@@ -18,19 +18,28 @@ document.getElementById('add-option').addEventListener('click', () => {
 
 // Click handler for vote buttons
 document.getElementById('polls-list')
-  .addEventListener('click', async (event) => {
-    const voteBtn = event.target.closest('.vote-btn');
+    .addEventListener('click', async (event) => {
+        // Handle vote button clicks
+        const voteBtn = event.target.closest('.vote-btn');
+        if (voteBtn) {
+            const pollPubKeyStr = voteBtn.dataset.poll;
+            const optionIndex = parseInt(voteBtn.dataset.index, 10);
+            const success = await vote(pollPubKeyStr, optionIndex);
+            if (success) await displayPolls();
+            return;
+        }
 
-    if (!voteBtn) return;
+        // Handle delete button clicks
+        const deleteBtn = event.target.closest('.delete-btn');
+        if (deleteBtn) {
+            const pollPubKeyStr = deleteBtn.dataset.poll;
+            const pollId = deleteBtn.dataset.pollid;
+            const success = await endPoll(pollPubKeyStr, pollId);
+            if (success) await displayPolls();
+        }
+    })
 
-    const pollPubKeyStr = voteBtn.dataset.poll;
-    const optionIndex = parseInt(voteBtn.dataset.index, 10);
 
-    const success = await vote(pollPubKeyStr, optionIndex);
-
-    // Refreshing polls once successful voting takes place
-    if (success) await displayPolls();
-  })
 
 // Display all active polls
 async function displayPolls() {
@@ -41,6 +50,7 @@ async function displayPolls() {
         return;
     }
 
+    const walletPublicKey = getWalletPubKey();
     const polls = await fetchActivePolls();
 
     if (polls.length === 0) {
@@ -48,18 +58,25 @@ async function displayPolls() {
         return;
     }
 
-    pollsList.innerHTML = polls.map(({ publicKey, account }) => `
-        <div class="poll-card" data-pubkey="${publicKey.toString()}">
-            <h3>${account.description}</h3>
-            <div class="poll-options">
-                ${account.options.map((opt, idx) => `
-                    <button class="vote-btn" data-poll="${publicKey.toString()}" data-index="${idx}">
-                        ${opt.description} <span class="vote-count">(${opt.votes.toNumber()} votes)</span>
-                    </button>
-                `).join('')}
+    pollsList.innerHTML = polls.map(({ publicKey, account }) => {
+        const isOwner = account.authority.equals(walletPublicKey);
+
+        return `
+            <div class="poll-card" data-pubkey="${publicKey.toString()}">
+                <div class="poll-header">
+                    <h3>${account.description}</h3>
+                    ${isOwner ? `<button class="delete-btn" data-poll="${publicKey.toString()}" data-pollid="${account.pollId.toString()}" title="Close Poll">🗑️</button>` : ''}
+                </div>
+                <div class="poll-options">
+                    ${account.options.map((opt, idx) => `
+                        <button class="vote-btn" data-poll="${publicKey.toString()}" data-index="${idx}">
+                            ${opt.description} <span class="vote-count">(${opt.votes.toNumber()} votes)</span>
+                        </button>
+                    `).join('')}
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Refresh polls when wallet connects
