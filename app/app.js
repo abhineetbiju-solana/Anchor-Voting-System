@@ -1,5 +1,5 @@
 import { showToast } from './utils/toast.js';
-import { fetchActivePolls, isWalletConnected } from './utils/anchorClient.js';
+import { fetchActivePolls, isWalletConnected, vote } from './utils/anchorClient.js';
 
 
 // Handle Add Option button click
@@ -15,6 +15,22 @@ document.getElementById('add-option').addEventListener('click', () => {
 
     optionsContainer.appendChild(newInput);
 });
+
+// Click handler for vote buttons
+document.getElementById('polls-list')
+  .addEventListener('click', async (event) => {
+    const voteBtn = event.target.closest('.vote-btn');
+
+    if (!voteBtn) return;
+
+    const pollPubKeyStr = voteBtn.dataset.poll;
+    const optionIndex = parseInt(voteBtn.dataset.index, 10);
+
+    const success = await vote(pollPubKeyStr, optionIndex);
+
+    // Refreshing polls once successful voting takes place
+    if (success) await displayPolls();
+  })
 
 // Display all active polls
 async function displayPolls() {

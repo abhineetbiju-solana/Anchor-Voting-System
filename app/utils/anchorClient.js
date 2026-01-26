@@ -85,6 +85,47 @@ createPollBtn.addEventListener('click', async function (event) {
   }
 })
 
+
+// Initialize vote 
+export async function vote(pollPubKeyStr, optionIndex) {
+  if (!program || !publicKey) {
+    showToast("Error in program/public key", "error");
+    console.log("Error in program/public key.");
+    return false;
+  }
+
+  try {
+    const pollPubKey = new PublicKey(pollPubKeyStr);
+
+    const txn = await program.methods
+      .initializeVote(optionIndex)
+      .accounts({
+        payer: publicKey,
+        poll: pollPubKey,
+      })
+      .rpc();
+
+    showToast("Vote has been successfully submitted", 'success');
+    console.log("Vote has been successfully submitted.");
+    return true;
+  } catch (err) {
+    if (err.error?.errorCode?.code === "AccountNotInitialized" ||
+      err.logs?.some(log => log.includes("already in use"))
+    ) {
+      showToast("You have already voted on this poll", 'error');
+    } else {
+      showToast("Failed to submit vote", 'error');
+    }
+
+    console.log("Vote failed: ", err);
+    return false;
+  }
+}
+
+
+// ===============================================================
+// Helper Functions
+
 // Fetch all active polls
 export async function fetchActivePolls() {
   if (!program) {
