@@ -1,6 +1,7 @@
 import { showToast } from './utils/toast.js';
 import { fetchActivePolls, isWalletConnected, vote, getWalletPubKey, endPoll } from './utils/anchorClient.js';
 
+await displayPolls();
 
 // Handle Add Option button click
 document.getElementById('add-option').addEventListener('click', () => {
