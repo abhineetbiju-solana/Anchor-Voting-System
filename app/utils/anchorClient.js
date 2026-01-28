@@ -39,6 +39,16 @@ connectWalletBtn.addEventListener('click', async function () {
     program = new anchor.Program(idl, provider);
 
     console.log("Connected to wallet successfully.")
+
+    // Update Button State
+    const btnText = connectWalletBtn.querySelector('.btn-text');
+    if (btnText) {
+      const key = publicKey.toString();
+      btnText.textContent = `${key.slice(0, 4)}...${key.slice(-4)}`;
+    } else {
+      connectWalletBtn.textContent = 'Connected';
+    }
+
   } catch (err) {
     showToast("Failed to connect to wallet", "error");
     console.log("Wallet connection failed: ", err);

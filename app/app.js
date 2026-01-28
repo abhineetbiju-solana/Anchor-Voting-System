@@ -46,7 +46,13 @@ async function displayPolls() {
     const pollsList = document.getElementById('polls-list');
 
     if (!isWalletConnected()) {
-        pollsList.innerHTML = '<p class="empty-state">Connect your wallet to view polls</p>';
+        pollsList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔒</div>
+                <p>Wallet Not Connected</p>
+                <p class="empty-sub">Please connect your wallet to view and vote on polls.</p>
+            </div>
+        `;
         return;
     }
 
@@ -54,7 +60,13 @@ async function displayPolls() {
     const polls = await fetchActivePolls();
 
     if (polls.length === 0) {
-        pollsList.innerHTML = '<p class="empty-state">No active polls. Create one above!</p>';
+        pollsList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🗳️</div>
+                <p>No Active Polls</p>
+                <p class="empty-sub">Be the first to create a poll!</p>
+            </div>
+        `;
         return;
     }
 
@@ -65,12 +77,17 @@ async function displayPolls() {
             <div class="poll-card" data-pubkey="${publicKey.toString()}">
                 <div class="poll-header">
                     <h3>${account.description}</h3>
-                    ${isOwner ? `<button class="delete-btn" data-poll="${publicKey.toString()}" data-pollid="${account.pollId.toString()}" title="Close Poll">🗑️</button>` : ''}
+                    ${isOwner ? `
+                        <button class="delete-btn" data-poll="${publicKey.toString()}" data-pollid="${account.pollId.toString()}" title="Close Poll">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                    ` : ''}
                 </div>
                 <div class="poll-options">
                     ${account.options.map((opt, idx) => `
                         <button class="vote-btn" data-poll="${publicKey.toString()}" data-index="${idx}">
-                            ${opt.description} <span class="vote-count">(${opt.votes.toNumber()} votes)</span>
+                            <span class="option-text">${opt.description}</span>
+                            <span class="vote-count">${opt.votes.toNumber()} votes</span>
                         </button>
                     `).join('')}
                 </div>

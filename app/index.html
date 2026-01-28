@@ -9,59 +9,75 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <header>
-        <div class="header-content">
-            <h1 class="main-heading">Voting System</h1>
-            <button id="connect-wallet" class="btn btn-primary">Connect Wallet</button>
-        </div>
-    </header>
+    <div class="background-effects">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
 
-    <main>
-        <!-- Create Poll Section -->
-        <section id="create-poll" class="card">
-            <h2>Create New Poll</h2>
-            <form id="poll-form">
-                <div class="form-group">
-                    <label for="poll-description">Poll Question</label>
-                    <input type="text" id="poll-description" placeholder="What would you like to ask?" required>
+    <div class="app-container">
+        <header>
+            <div class="header-content">
+                <div class="logo-container">
+                    <h1 class="main-heading">Voting System</h1>
                 </div>
-                <div class="form-group">
-                    <label>Options</label>
-                    <div id="options-container">
-                        <input type="text" class="option-input" placeholder="Option 1" required>
-                        <input type="text" class="option-input" placeholder="Option 2" required>
-                    </div>
-                    <button type="button" id="add-option" class="btn btn-secondary">+ Add Option</button>
-                </div>
-                <button type="submit" id="submit" class="btn btn-primary">Create Poll</button>
-            </form>
-        </section>
-
-        <!-- Active Polls Section -->
-        <section id="polls-section" class="card">
-            <h2>Active Polls</h2>
-            <div id="polls-list">
-                <p class="empty-state">No active polls. Create one above!</p>
+                <button id="connect-wallet" class="btn btn-primary">
+                    <span class="btn-text">Connect Wallet</span>
+                </button>
             </div>
-        </section>
+        </header>
 
-        <!-- Poll Results Section (will be populated dynamically) -->
-        <section id="results-section" class="card hidden">
-            <h2>Poll Results</h2>
-            <div id="results-container"></div>
-        </section>
-    </main>
+        <main>
+            <!-- Create Poll Section -->
+            <section id="create-poll" class="glass-card">
+                <div class="card-header">
+                    <h2>Create New Poll</h2>
+                    <p class="subtitle">Launch a decentralized vote on Solana</p>
+                </div>
+                <form id="poll-form">
+                    <div class="form-group">
+                        <label for="poll-description">Poll Question</label>
+                        <input type="text" id="poll-description" placeholder="What's on your mind?" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Options</label>
+                        <div id="options-container">
+                            <input type="text" class="option-input" placeholder="Option 1" required>
+                            <input type="text" class="option-input" placeholder="Option 2" required>
+                        </div>
+                        <button type="button" id="add-option" class="btn btn-ghost">+ Add Option</button>
+                    </div>
+                    <button type="submit" id="submit" class="btn btn-primary full-width">
+                        <span class="btn-content">Create Poll</span>
+                    </button>
+                </form>
+            </section>
 
-    <footer>
-        <p>Built on Solana • Powered by Anchor</p>
-    </footer>
+            <!-- Active Polls Section -->
+            <section id="polls-section" class="glass-card">
+                <div class="card-header">
+                    <h2>Active Polls</h2>
+                    <p class="subtitle">Vote on open proposals</p>
+                </div>
+                <div id="polls-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">🗳️</div>
+                        <p>No active polls found.</p>
+                        <p class="empty-sub">Connect your wallet or create a new poll to get started.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
 
-    <!-- Status Toast (used to provide non-intrusive notifications) -->
+        <footer>
+            <p>Built on <strong>Solana</strong> • Powered by <strong>Anchor</strong></p>
+        </footer>
+    </div>
+
+    <!-- Status Toast -->
     <div id="toast" class="toast hidden">
         <span id="toast-message"></span>
     </div>
