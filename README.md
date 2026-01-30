@@ -8,6 +8,8 @@ This project combines a Solana smart contract (written in Rust using Anchor) wit
 
 **Live on Solana Devnet** — Program ID: `9ySVZtNi4B34cq4ewXAdVS2fwJ7q2cTbRmnSBGo2BF58`
 
+![Voting System Screenshot](assets/screenshot.png)
+
 ## Features
 
 - **Create Polls** — Write a question and add multiple options
